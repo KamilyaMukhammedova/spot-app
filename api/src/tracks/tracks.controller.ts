@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -39,8 +40,13 @@ export class TracksController {
   }
 
   @Get()
-  getAll() {
-    return this.tracksService.getAll();
+  getAll(@Query('count') count: number, @Query('offset') offset: number) {
+    return this.tracksService.getAll(count, offset);
+  }
+
+  @Get('/search')
+  search(@Query('query') query: string) {
+    return this.tracksService.search(query);
   }
 
   @Get(':id')
@@ -60,5 +66,10 @@ export class TracksController {
       text: commentData.text,
       trackId: commentData.trackId,
     });
+  }
+
+  @Post('/listen/:id')
+  listen(@Param('id') id: ObjectId) {
+    return this.tracksService.listen(id);
   }
 }
